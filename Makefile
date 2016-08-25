@@ -9,7 +9,7 @@ GO_BINDATA := $(GO_PATH)/bin/bindata
 
 # Handling project dirs and names
 ROOT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-PROJECT_PATH := $(subst $(GO_PATH)/src/,, $(realpath $(ROOT_DIR)))
+PROJECT_PATH := $(strip $(subst $(GO_PATH)/src/,, $(realpath $(ROOT_DIR))))
 PROJECT_NAME := $(lastword $(subst /, , $(PROJECT_PATH)))
 
 BINARY := bin/$(PROJECT_NAME)
