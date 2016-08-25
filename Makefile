@@ -1,17 +1,16 @@
 SOURCEDIR := .
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 # Go utilities
-GO_LINT := ${GOPATH}/bin/golint
-GO_GODEP := ${GOPATH}/bin/godep
-GO_BINDATA := ${GOPATH}/bin/bindata
+GO_PATH := ${GOPATH}
+GO_PATH := $(realpath $(GO_PATH))
+GO_LINT := $(GO_PATH)/bin/golint
+GO_GODEP := $(GO_PATH)/bin/godep
+GO_BINDATA := $(GO_PATH)/bin/bindata
 
 # Handling project dirs and names
 ROOT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-PROJECT_PATH := $(subst $(GOPATH)/src/,, $(ROOT_DIR))
+PROJECT_PATH := $(subst $(GO_PATH)/src/,, $(realpath $(ROOT_DIR)))
 PROJECT_NAME := $(lastword $(subst /, , $(PROJECT_PATH)))
-# For some reason $(patsubst %/,, ) doesn't work on OSX
-PROJECT_PATH := $(subst $(PROJECT_NAME)/,$(PROJECT_NAME), $(PROJECT_PATH))
-PROJECT_PATH := $(strip $(PROJECT_PATH))
 
 BINARY := bin/$(PROJECT_NAME)
 
