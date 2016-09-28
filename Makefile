@@ -54,7 +54,7 @@ test-ginkgo: vet $(GO_GINKGO)
 	@$(GO_GINKGO) -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
 
 $(TARGETS_TEST): test-%: %
-	@go test ./$<
+	@go test -v -parallel 4 ./$<
 
 vet: $(TARGETS_VET)
 # @go vet
