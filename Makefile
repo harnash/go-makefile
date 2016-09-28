@@ -6,6 +6,7 @@ GO_PATH := $(realpath $(GO_PATH))
 GO_LINT := $(GO_PATH)/bin/golint
 GO_GODEP := $(GO_PATH)/bin/godep
 GO_BINDATA := $(GO_PATH)/bin/bindata
+GO_GINKGO := $(GO_PATH)/bin/ginkgo
 
 # Handling project dirs and names
 ROOT_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -37,6 +38,9 @@ $(GO_LINT):
 $(GO_GODEP):
 	go get -u github.com/tools/godep
 
+$(GO_GINKGO):
+	go get github.com/onsi/ginkgo/ginkgo
+
 prepare: $(GO_GODEP)
 	$(GO_GODEP) restore
 
@@ -45,6 +49,9 @@ install:
 
 test: vet $(TARGETS_TEST)
 # @go test
+
+test-ginkgo: vet $(GO_GINKGO)
+	@$(GO_GINKGO) -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
 
 $(TARGETS_TEST): test-%: %
 	@go test ./$<
@@ -55,11 +62,14 @@ vet: $(TARGETS_VET)
 $(TARGETS_VET): vet-%: %
 	@go vet $</*.go
 
+fmt-check:
+	@test -z "$$(gofmt -s -l $(TARGETS) | tee /dev/stderr)"
+
 fmt: $(TARGETS_FMT)
 # @go fmt
 
 $(TARGETS_FMT): fmt-%: %
-	@go fmt $</*.go
+	@gofmt -s -w $</*.go
 
 lint: $(GO_LINT) $(TARGETS_LINT)
 # @golint
