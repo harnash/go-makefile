@@ -107,6 +107,7 @@ gen-resources: $(GO_BINDATA)
 	$(GO_BINDATA) -o resources/resources.go -pkg resources -prefix resources -ignore resources.go resources/...
 
 clean:
-	if [ -f ${BINARY} ] ; then rm ${BINARY} ; fi
+	test -f ${BINARY} && exit 0
+	$(if $(filter $(OS),Windows_NT), del $(subst /,\,${BINARY}), rm ${BINARY})
 
 .PHONY: test lint vet $(TARGETS_TEST) $(TARGETS_LINT)
